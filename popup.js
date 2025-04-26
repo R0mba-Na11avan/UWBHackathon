@@ -1,8 +1,11 @@
+//ooga booga binga
 document.addEventListener("DOMContentLoaded", () => {
     const toggleSwitch = document.getElementById("toggleSwitch");
     const urlList = document.getElementById("urlList");
     const urlInput = document.getElementById("urlInput");
     const addUrlBtn = document.getElementById("addUrl");
+    const confirmClose = document.getElementById("confirmClose");
+    const forceCloseBtn = document.getElementById("forceCloseBtn");
 
     // Load saved settings
     chrome.storage.sync.get(["enabled", "blockedUrls"], (data) => {
@@ -10,10 +13,24 @@ document.addEventListener("DOMContentLoaded", () => {
         updateUrlList(data.blockedUrls || []);
     });
 
-    // Toggle the extension on/off
     toggleSwitch.addEventListener("change", () => {
-        chrome.runtime.sendMessage({ action: "toggle", enabled: toggleSwitch.checked });
-        chrome.storage.sync.set({ enabled: toggleSwitch.checked });
+        if (!toggleSwitch.checked) {
+            // If user tries to turn it off, block them and show "no"
+            toggleSwitch.checked = true; // Immediately revert back to ON
+            confirmClose.style.display = "block"; // Show the hidden area
+        } else {
+            // User turns it ON normally
+            chrome.runtime.sendMessage({ action: "toggle", enabled: true });
+            chrome.storage.sync.set({ enabled: true });
+        }
+    });
+
+    // When user clicks "okay close fr"
+    forceCloseBtn.addEventListener("click", () => {
+        confirmClose.style.display = "none"; // Hide the "no" message
+        toggleSwitch.checked = false; // Actually turn off
+        chrome.runtime.sendMessage({ action: "toggle", enabled: false });
+        chrome.storage.sync.set({ enabled: false });
     });
 
     // Add URL to block list
