@@ -18,6 +18,12 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "toggle") {
         enabled = request.enabled;
+        if (enabled) {
+            chrome.action.setIcon({ path: "icon_mischiveous.png" });
+        }
+        else {
+            chrome.action.setIcon({ path: "icon_sleep.png" });
+        }
         chrome.storage.sync.set({ enabled: enabled });
     } else if (request.action === "updateUrls") {
         chrome.storage.sync.set({ blockedUrls: request.urls });
