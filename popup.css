@@ -11,6 +11,13 @@ body {
     border-radius: 25px;
 }
 
+img.icon {
+    width: 85px;
+    height: 85px;
+    margin: 25px auto;
+    border-radius: 10px;
+}
+
 h1 {
     font-size: 18px;
 }

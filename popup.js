@@ -6,11 +6,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const addUrlBtn = document.getElementById("addUrl");
     const confirmClose = document.getElementById("confirmClose");
     const forceCloseBtn = document.getElementById("forceCloseBtn");
+    
+
+    function updatePopupIcon(isEnabled) {
+        const icon = document.getElementById("icon");
+        if (!icon) return;
+
+        if (isEnabled) {
+            icon.setAttribute("src", "icon_mischiveous.png");
+        } else {
+            icon.setAttribute("src", "icon_sleep.png");
+        }
+    }
+
 
     // Load saved settings
     chrome.storage.sync.get(["enabled", "blockedUrls"], (data) => {
-        toggleSwitch.checked = data.enabled ?? true;
+        toggleSwitch.checked = data.enabled ?? false;
         updateUrlList(data.blockedUrls || []);
+        updatePopupIcon(toggleSwitch.checked);
     });
 
     toggleSwitch.addEventListener("change", () => {
@@ -22,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // User turns it ON normally
             chrome.runtime.sendMessage({ action: "toggle", enabled: true });
             chrome.storage.sync.set({ enabled: true });
+            updatePopupIcon(true);
         }
     });
 
@@ -31,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleSwitch.checked = false; // Actually turn off
         chrome.runtime.sendMessage({ action: "toggle", enabled: false });
         chrome.storage.sync.set({ enabled: false });
+        updatePopupIcon(false);
     });
 
     // Add URL to block list

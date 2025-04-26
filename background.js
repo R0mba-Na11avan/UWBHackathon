@@ -1,4 +1,4 @@
-let enabled = true; 
+let enabled = false;
 
 chrome.storage.sync.get(["enabled", "blockedUrls"], (data) => {
     if (data.enabled !== undefined) enabled = data.enabled;
@@ -20,9 +20,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         enabled = request.enabled;
         if (enabled) {
             chrome.action.setIcon({ path: "icon_mischiveous.png" });
+            document.getElementById("icon").setAttribute("src", "icon_mischiveous.png");
         }
         else {
             chrome.action.setIcon({ path: "icon_sleep.png" });
+            document.getElementById("icon").setAttribute("src", "icon_sleep.png");
         }
         chrome.storage.sync.set({ enabled: enabled });
     } else if (request.action === "updateUrls") {
